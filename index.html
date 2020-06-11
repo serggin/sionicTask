@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sionic</title>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- production version, optimized for size and speed -->
+    <!--script src="https://cdn.jsdelivr.net/npm/vue"></script-->
+    <link href="app.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+    <div id="app">
+        <div v-if="error" class="error">{{error}}</div>
+        <sionic-table
+                :page="page"
+                :limit="limit"
+                :total="total"
+                :cities="cities"
+                :table-data="tableData"
+                :get-quantity="getQuantity"
+                :get-price="getPrice"
+        ></sionic-table>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>
