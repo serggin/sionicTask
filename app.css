@@ -7,3 +7,20 @@ table {
 table, th, td {
     border: 1px solid grey;
 }
+td {
+    text-align: right;
+}
+td:nth-child(2), td:nth-child(5) {
+    text-align: left;
+}
+.paginator {
+    display: flex;
+}
+.paginator a {
+    color: blue;
+    cursor: pointer;
+    padding: 0 1em;
+}
+.paginator span {
+    padding: 0 1em;
+}

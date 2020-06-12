@@ -1,45 +1,39 @@
 Vue.component('sionic-table', {
   props: ['page', 'limit', 'total', 'cities', 'tableData', 'getQuantity', 'getPrice'],
   template: `
-<div>
-  <h3>Sionic table</h3>
-  <div>page = {{page}}</div>
-  <div>limit = {{limit}}</div>
-  <div>total = {{total}}</div>
-  <table>
-    <thead>
-      <tr>
-        <th rowspan="2">id</th>
-        <th rowspan="2">name</th>
-        <th rowspan="2">code</th>
-        <th rowspan="2">weight</th>
-        <th rowspan="2">usage</th>
-        <template v-for="item in cities">
-          <th colspan="2" :key="item.abbr">{{item.city}}</th>
-        </template>
-      </tr>
-      <tr>
-        <template v-for="item in cities">
-          <th>quantity</th>
-          <th>price</th>
-        </template>      
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="rowData in tableData" :key="rowData.code">
-        <td>{{ rowData.id }}</td>
-        <td>{{ rowData.name }}</td>
-        <td>{{ rowData.code }}</td>
-        <td>{{ rowData.weight }}</td>
-        <td>{{ rowData.usage }}</td>
-        <template v-for="city in cities">
-          <td> {{ getQuantity(rowData, city.abbr) }}</td>
-          <td> {{ getPrice(rowData, city.abbr) }}</td>
-        </template>
-     </tr>
-    </tbody>
-  </table>
-</div>
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">id</th>
+      <th rowspan="2">name</th>
+      <th rowspan="2">code</th>
+      <th rowspan="2">weight</th>
+      <th rowspan="2">usage</th>
+      <template v-for="item in cities">
+        <th colspan="2" :key="item.abbr">{{item.city}}</th>
+      </template>
+    </tr>
+    <tr>
+      <template v-for="item in cities">
+        <th>quantity</th>
+        <th>price</th>
+      </template>      
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="rowData in tableData" :key="rowData.code">
+      <td>{{ rowData.id }}</td>
+      <td>{{ rowData.name }}</td>
+      <td>{{ rowData.code }}</td>
+      <td>{{ rowData.weight }}</td>
+      <td>{{ rowData.usage }}</td>
+      <template v-for="city in cities">
+        <td> {{ getQuantity(rowData, city.abbr) }}</td>
+        <td> {{ getPrice(rowData, city.abbr) }}</td>
+      </template>
+   </tr>
+  </tbody>
+</table>
   `
 });
 
@@ -51,11 +45,15 @@ var app= new Vue({
     page: 1,
     offset: 0,
     limit: 10,
-    //cities: [{city:"Москва", abbr: "msk"}],
+    paginatorLimit: 10,
     cities: [],
     tableData: []
   },
   methods: {
+    onPage(page) {
+      this.fetchData((page - 1) * this.limit, this.limit);
+      this.page = page;
+    },
     getQuantity(rowData, abbr) {
       var field = "quantity_" + abbr;
       return rowData[field];
@@ -74,9 +72,7 @@ var app= new Vue({
           }
         })
         .then(json => {
-          //this.cities = JSON.parse(json);
           this.tableData = json;
-          console.log("tableData = ", json);
         })
         .catch(error => {
           console.error(error);
@@ -94,7 +90,6 @@ var app= new Vue({
         }
       })
       .then(text => {
-        //console.log("response.text = ", text);
         this.total = parseInt(text);
       })
       .catch(error => {
@@ -112,9 +107,7 @@ var app= new Vue({
         }
       })
       .then(json => {
-        //this.cities = JSON.parse(json);
         this.cities = json;
-        console.log("cities = ", json);
       })
       .catch(error => {
         console.error(error);
@@ -122,6 +115,10 @@ var app= new Vue({
       });
 
     this.fetchData(this.offset, this.limit);
-
+  },
+  computed: {
+    pages() {
+      return Math.ceil(this.total / this.limit);
+    }
   }
 });
